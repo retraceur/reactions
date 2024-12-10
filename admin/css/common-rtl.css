@@ -1,0 +1,44 @@
+.comment-ays {
+	border: 1px solid #c3c4c7;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.comment-ays {
+	background: #fff;
+}
+
+.column-comments {
+	text-align: center;
+}
+
+.widefat th#comments {
+	vertical-align: middle;
+}
+
+.widefat .column-comment p {
+	margin: 0.6em 0;
+}
+
+.widefat .column-comment ul {
+	list-style: initial;
+	margin-right: 2em;
+}
+
+#comment-status-display {
+	font-weight: 600;
+}
+
+.edit-comment-author {
+	color: #1d2327;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+@media screen and (max-width: 782px) {
+	#comments-form .checkforspam {
+		display: none;
+	}
+
+	.edit-comment-author {
+		margin: 2px 0 0;
+	}
+}

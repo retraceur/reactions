@@ -1,0 +1,115 @@
+#show-comments {
+	overflow: hidden;
+}
+
+#show-comments a {
+	float: left;
+}
+
+#show-comments .spinner {
+	float: none;
+	margin-top: 0;
+}
+
+#comment-link-box {
+	line-height: 1.84615384;
+	min-height: 25px;
+	margin-top: 5px;
+	padding: 0 10px;
+	color: #646970;
+}
+
+#comment-link-box {
+	margin: 5px 0;
+	padding: 0 5px;
+}
+
+#comment-status-radio {
+	line-height: 1.5;
+	margin-top: 3px;
+}
+
+/* Comments */
+
+.comment-php .wp-editor-area {
+	height: 200px;
+}
+
+.comment-ays th,
+.comment-ays td {
+	padding: 10px 15px;
+}
+
+.comment-ays .comment-content ul {
+	list-style: initial;
+	margin-left: 2em;
+}
+
+.comment-ays .comment-content a[href]:after {
+	content: "(" attr( href ) ")";
+	display: inline-block;
+	padding: 0 4px;
+	color: #646970;
+	font-size: 13px;
+	word-break: break-all;
+}
+
+.comment-ays .comment-content p.edit-comment {
+	margin-top: 10px;
+}
+
+.comment-ays .comment-content p.edit-comment a[href]:after {
+	content: "";
+	padding: 0;
+}
+
+.comment-ays-submit .button-cancel {
+	margin-left: 1em;
+}
+
+.stuffbox .editcomment {
+	clear: none;
+	margin-top: 0;
+}
+
+#namediv.stuffbox .editcomment input {
+	width: 100%;
+}
+
+#namediv.stuffbox .editcomment.form-table td {
+	padding: 10px;
+}
+
+#comment-status-radio p {
+	margin: 3px 0 5px;
+}
+
+#comment-status-radio input {
+	margin: 2px 3px 5px 0;
+	vertical-align: middle;
+}
+
+#comment-status-radio label {
+	padding: 5px 0;
+}
+
+@media screen and (max-width: 782px) {
+	#namediv.stuffbox .editcomment.form-table td {
+		padding: 5px 10px;
+	}
+
+	/* Discussion */
+	#commentstatusdiv p {
+		line-height: 2.8;
+	}
+
+	/* Moderate Comment */
+	.comment-ays th,
+	.comment-ays td {
+		padding-bottom: 0;
+	}
+
+	.comment-ays td {
+		padding-top: 6px;
+	}
+}

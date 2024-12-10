@@ -1,0 +1,172 @@
+#the-comment-list td.comment p.comment-author {
+	margin-top: 0;
+	margin-right: 0;
+}
+
+#the-comment-list p.comment-author img {
+	float: right;
+	margin-left: 8px;
+}
+
+#the-comment-list p.comment-author strong a {
+	border: none;
+}
+
+#the-comment-list td {
+	vertical-align: top;
+}
+
+#the-comment-list td.comment {
+	word-wrap: break-word;
+}
+
+#the-comment-list td.comment img {
+	max-width: 100%;
+}
+
+/* @deprecated WP 5.9.0 -- Icons removed from welcome panel. */
+.welcome-panel .welcome-comments:before {
+	content: "\f117";
+	top: -1px;
+}
+
+#dashboard_right_now .comment-count a:before {
+	content: "\f101";
+}
+
+#dashboard_right_now .comment-mod-count a:before {
+	content: "\f125";
+}
+
+#dashboard_activity .comment-meta span.approve:before {
+	content: "\f227";
+	font: 20px/.5 dashicons;
+	margin-right: 5px;
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+	margin-left: 2px;
+}
+
+#activity-widget #the-comment-list tr.undo,
+#activity-widget #the-comment-list div.undo {
+	background: none;
+	padding: 6px 0;
+	margin-right: 12px;
+}
+
+#activity-widget #the-comment-list .comment-item {
+	background: #f6f7f7;
+	padding: 12px;
+	position: relative;
+}
+
+#activity-widget #the-comment-list .avatar {
+	position: absolute;
+	top: 12px;
+}
+
+#activity-widget #the-comment-list .dashboard-comment-wrap.has-avatar {
+	padding-right: 63px;
+}
+
+#activity-widget #the-comment-list .dashboard-comment-wrap blockquote {
+	margin: 1em 0;
+}
+
+#activity-widget #the-comment-list .comment-item p.row-actions {
+	margin: 4px 0 0;
+}
+
+#activity-widget #the-comment-list .comment-item:first-child {
+	border-top: 1px solid #f0f0f1;
+}
+
+#activity-widget #the-comment-list .unapproved {
+	background-color: #fcf9e8;
+}
+
+#activity-widget #the-comment-list .unapproved:before {
+	content: "";
+	display: block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: #d63638;
+	width: 4px;
+}
+
+#activity-widget #the-comment-list .spam-undo-inside .avatar,
+#activity-widget #the-comment-list .trash-undo-inside .avatar {
+	position: relative;
+	top: 0;
+}
+
+/* Recent Comments */
+
+#latest-comments #the-comment-list {
+	position: relative;
+	margin: 0 -12px;
+}
+
+#activity-widget #the-comment-list .comment,
+#activity-widget #the-comment-list .pingback {
+	box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+#activity-widget .comments #the-comment-list .alt {
+	background-color: transparent;
+}
+
+#activity-widget #latest-comments #the-comment-list .comment-item {
+	/* the row-actions paragraph is output only for users with 'edit_comment' capabilities,
+	   for other users this needs a min height equal to the avatar image */
+	min-height: 50px;
+	margin: 0;
+	padding: 12px;
+}
+
+#latest-comments #the-comment-list .pingback {
+	padding-right: 12px !important;
+}
+
+#latest-comments #the-comment-list .comment-item:first-child {
+	border-top: none;
+}
+
+#latest-comments #the-comment-list .comment-meta {
+	line-height: 1.5;
+	margin: 0;
+	color: #646970;
+}
+
+#latest-comments #the-comment-list .comment-meta cite {
+	font-style: normal;
+	font-weight: 400;
+}
+
+#latest-comments #the-comment-list .comment-item blockquote,
+#latest-comments #the-comment-list .comment-item blockquote p {
+	margin: 0;
+	padding: 0;
+	display: inline;
+}
+
+#latest-comments #the-comment-list .comment-item p.row-actions {
+	margin: 3px 0 0;
+	padding: 0;
+	font-size: 13px;
+}
+
+.dashboard-comment-wrap {
+	word-wrap: break-word;
+}
+
+@media screen and (max-width: 782px) {
+	#dashboard_recent_comments #the-comment-list .comment-item .avatar {
+		height: 30px;
+		width: 30px;
+		margin: 4px 0 5px 10px;
+	}
+}
