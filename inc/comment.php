@@ -500,3 +500,16 @@ function get_page_of_comment( $comment_id, $args = array() ) {
 	 */
 	return apply_filters( 'get_page_of_comment', (int) $page, $args, $original_args, $comment_id );
 }
+
+function retraceur_reaction_unapproved_headers( $headers ) {
+	// Unmoderated comments are only visible for 10 minutes via the moderation hash.
+	$expires = 10 * MINUTE_IN_SECONDS;
+
+	$headers['Expires']       = gmdate( $date_format, time() + $expires );
+	$headers['Cache-Control'] = sprintf(
+		'max-age=%d, must-revalidate',
+		$expires
+	);
+
+	return $headers;
+}
