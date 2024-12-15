@@ -60,6 +60,7 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 	<link rel="self" type="application/atom+xml" href="<?php bloginfo_rss( 'comments_atom_url' ); ?>" />
 	<id><?php bloginfo_rss( 'comments_atom_url' ); ?></id>
 <?php endif; ?>
+<generator version="<?php echo esc_attr( get_bloginfo_rss( 'version' ) );?>">Retraceur</generator>
 <?php
 	/**
 	 * Fires at the end of the Atom comment feed header.

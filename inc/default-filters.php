@@ -9,3 +9,23 @@ add_filter( 'wp_privacy_personal_data_erasers', 'wp_register_comment_personal_da
 add_action( 'embed_content_meta', 'print_embed_comments_button' );
 
 add_filter( 'retraceur_unapproved_reaction_headers', 'retraceur_reaction_unapproved_headers' )
+
+foreach (
+    array(
+        'comment_max_links',
+        'close_comments_days_old',
+        'comments_per_page',
+        'thread_comments_depth',
+        'default_ping_status',
+        'default_comment_status',
+        'ping_sites',
+        'limited_email_domains',
+        'banned_email_domains',
+        'moderation_keys',
+        'disallowed_keys',
+    ) as $option ) {
+    add_filter( "sanitize_option_{$option}", 'retraceur_reaction_sanitize_option', 10, 3 );
+}
+
+add_action( 'wp_head', 'retraceur_reaction_feed_links', 2 );
+add_action( 'wp_head', 'retraceur_reaction_feed_links_extra', 3 );

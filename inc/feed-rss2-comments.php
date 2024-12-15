@@ -64,6 +64,7 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 		echo apply_filters( 'rss_update_frequency', '1' );
 	?>
 	</sy:updateFrequency>
+	<generator><php echo sanitize_url( 'https://github.com/retraceur/?v=' . get_bloginfo_rss( 'version' ) ) ;?></generator>
 	<?php
 	/**
 	 * Fires at the end of the RSS2 comment feed header.
