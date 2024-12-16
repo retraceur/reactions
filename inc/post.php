@@ -125,3 +125,109 @@ function wp_untrash_post_comments( $post = null ) {
 	 */
 	do_action( 'untrashed_post_comments', $post_id );
 }
+
+/**
+ * Adds a URL to those already pinged.
+ *
+ * @since WP 1.5.0
+ * @since WP 4.7.0 `$post` can be a WP_Post object.
+ * @since WP 4.7.0 `$uri` can be an array of URIs.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int|WP_Post  $post Post ID or post object.
+ * @param string|array $uri  Ping URI or array of URIs.
+ * @return int|false How many rows were updated.
+ */
+function add_ping( $post, $uri ) {
+	global $wpdb;
+
+	$post = get_post( $post );
+
+	if ( ! $post ) {
+		return false;
+	}
+
+	$pung = trim( $post->pinged );
+	$pung = preg_split( '/\s/', $pung );
+
+	if ( is_array( $uri ) ) {
+		$pung = array_merge( $pung, $uri );
+	} else {
+		$pung[] = $uri;
+	}
+	$new = implode( "\n", $pung );
+
+	/**
+	 * Filters the new ping URL to add for the given post.
+	 *
+	 * @since WP 2.0.0
+	 *
+	 * @param string $new New ping URL to add.
+	 */
+	$new = apply_filters( 'add_ping', $new );
+
+	$return = $wpdb->update( $wpdb->posts, array( 'pinged' => $new ), array( 'ID' => $post->ID ) );
+	clean_post_cache( $post->ID );
+	return $return;
+}
+
+/**
+ * Retrieves URLs already pinged for a post.
+ *
+ * @since WP 1.5.0
+ *
+ * @since WP 4.7.0 `$post` can be a WP_Post object.
+ *
+ * @param int|WP_Post $post Post ID or object.
+ * @return string[]|false Array of URLs already pinged for the given post, false if the post is not found.
+ */
+function get_pung( $post ) {
+	$post = get_post( $post );
+
+	if ( ! $post ) {
+		return false;
+	}
+
+	$pung = trim( $post->pinged );
+	$pung = preg_split( '/\s/', $pung );
+
+	/**
+	 * Filters the list of already-pinged URLs for the given post.
+	 *
+	 * @since WP 2.0.0
+	 *
+	 * @param string[] $pung Array of URLs already pinged for the given post.
+	 */
+	return apply_filters( 'get_pung', $pung );
+}
+
+/**
+ * Hook to schedule pings and enclosures when a post is published.
+ *
+ * Uses WP_IMPORTING constants.
+ *
+ * @since WP 2.3.0
+ * @access private
+ *
+ * @param int $post_id The ID of the post being published.
+ */
+function _publish_post_hook( $post_id ) {
+	if ( defined( 'WP_IMPORTING' ) ) {
+		return;
+	}
+
+	if ( get_option( 'default_pingback_flag' ) ) {
+		add_post_meta( $post_id, '_pingme', '1', true );
+	}
+	add_post_meta( $post_id, '_encloseme', '1', true );
+
+	$to_ping = get_to_ping( $post_id );
+	if ( ! empty( $to_ping ) ) {
+		add_post_meta( $post_id, '_trackbackme', '1' );
+	}
+
+	if ( ! wp_next_scheduled( 'do_pings' ) ) {
+		wp_schedule_single_event( time(), 'do_pings' );
+	}
+}

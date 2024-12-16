@@ -8,7 +8,7 @@ add_filter( 'wp_privacy_personal_data_erasers', 'wp_register_comment_personal_da
 
 add_action( 'embed_content_meta', 'print_embed_comments_button' );
 
-add_filter( 'retraceur_unapproved_reaction_headers', 'retraceur_reaction_unapproved_headers' )
+add_filter( 'retraceur_unapproved_reaction_headers', 'retraceur_reaction_unapproved_headers' );
 
 foreach (
     array(
@@ -29,3 +29,11 @@ foreach (
 
 add_action( 'wp_head', 'retraceur_reaction_feed_links', 2 );
 add_action( 'wp_head', 'retraceur_reaction_feed_links_extra', 3 );
+
+add_action( 'publish_post', '_publish_post_hook', 5, 1 );
+
+add_action( 'do_pings', 'do_all_pings', 10, 0 );
+add_action( 'do_all_pings', 'do_all_pingbacks', 10, 0 );
+add_action( 'do_all_pings', 'do_all_enclosures', 10, 0 );
+add_action( 'do_all_pings', 'do_all_trackbacks', 10, 0 );
+add_action( 'do_all_pings', 'generic_ping', 10, 0 );
