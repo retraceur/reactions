@@ -47,6 +47,9 @@ function wp_ajax_replyto_comment( $action ) {
 			if ( wp_create_nonce( 'unfiltered-html-comment' ) !== $_POST['_wp_unfiltered_html_comment'] ) {
 				kses_remove_filters(); // Start with a clean slate.
 				kses_init_filters();   // Set up the filters.
+				retraceur_reaction_kses_remove_filters();
+				retraceur_reaction_kses_init_filters();
+
 				remove_filter( 'pre_comment_content', 'wp_filter_post_kses' );
 				add_filter( 'pre_comment_content', 'wp_filter_kses' );
 			}
