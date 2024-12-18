@@ -37,3 +37,4 @@ add_action( 'do_all_pings', 'do_all_pingbacks', 10, 0 );
 add_action( 'do_all_pings', 'do_all_enclosures', 10, 0 );
 add_action( 'do_all_pings', 'do_all_trackbacks', 10, 0 );
 add_action( 'do_all_pings', 'generic_ping', 10, 0 );
+add_filter( 'option_ping_sites', 'privacy_ping_filter' );
