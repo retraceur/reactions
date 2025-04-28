@@ -1,5 +1,15 @@
 <?php
 
+if (
+	// Comment reply link.
+	isset( $_GET['replytocom'] )
+	||
+	// Unapproved comment preview.
+	( isset( $_GET['unapproved'] ) && isset( $_GET['moderation-hash'] ) )
+) {
+	add_filter( 'wp_robots', 'wp_robots_no_robots' );
+}
+
 add_action( 'sanitize_comment_cookies', 'sanitize_comment_cookies' );
 add_action( 'set_comment_cookies', 'wp_set_comment_cookies', 10, 3 );
 
