@@ -1,7 +1,7 @@
 <?php
 /**
  * REST API: WP_REST_Comments_Controller class
- * 
+ *
  * @since WP 4.7.0
  * @since 1.0.0 Retraceur fork.
  *
@@ -1247,7 +1247,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	 *
 	 * @since WP 4.7.0
 	 *
-	 * @param string|int $comment_approved comment status.
+	 * @param string $comment_approved Comment status.
 	 * @return string Comment status.
 	 */
 	protected function prepare_status_response( $comment_approved ) {
