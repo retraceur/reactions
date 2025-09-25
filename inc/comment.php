@@ -1145,6 +1145,8 @@ function get_comment_count( $post_id = 0 ) {
 /**
  * Adds meta data field to a comment.
  *
+ * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
+ *
  * @since WP 2.9.0
  *
  * @param int    $comment_id Comment ID.
@@ -1170,6 +1172,8 @@ function add_comment_meta( $comment_id, $meta_key, $meta_value, $unique = false 
  * You can match based on the key, or key and value. Removing based on key and
  * value, will keep from removing duplicate metadata with the same key. It also
  * allows removing all metadata matching key, if needed.
+ *
+ * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
  *
  * @since WP 2.9.0
  *
@@ -1232,6 +1236,8 @@ function wp_lazyload_comment_meta( array $comment_ids ) {
  * same key and comment ID.
  *
  * If the meta field for the comment does not exist, it will be added.
+ *
+ * For historical reasons both the meta key and the meta value are expected to be "slashed" (slashes escaped) on input.
  *
  * @since WP 2.9.0
  *
