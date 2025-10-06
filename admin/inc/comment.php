@@ -197,3 +197,16 @@ function floated_admin_avatar( $name ) {
 	$avatar = get_avatar( get_comment(), 32, 'mystery' );
 	return "$avatar $name";
 }
+
+/**
+ * Displays error message at bottom of comments.
+ *
+ * @since WP 2.5.0
+ *
+ * @param string $msg Error Message. Assumed to contain HTML and be sanitized.
+ */
+function comment_footer_die( $msg ) {
+	echo "<div class='wrap'><p>$msg</p></div>";
+	require_once ABSPATH . 'wp-admin/admin-footer.php';
+	die;
+}
