@@ -1,5 +1,13 @@
 <?php
 
+function retraceur_reaction_initial_post_types_creation( $args ) {
+	$args['supports']['editor'] = array( 'notes' => true );
+
+	return $args;
+}
+add_filter( 'register_post_post_type_args', 'retraceur_reaction_initial_post_types_creation' );
+add_filter( 'register_page_post_type_args', 'retraceur_reaction_initial_post_types_creation' );
+
 /**
  * Moves comments for a post to the Trash.
  *
