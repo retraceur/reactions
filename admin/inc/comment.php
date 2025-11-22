@@ -140,6 +140,7 @@ function get_comment_to_edit( $id ) {
  * Gets the number of pending comments on a post or posts.
  *
  * @since WP 2.3.0
+ * @since WP 6.9.0 Exclude the 'note' comment type from the count.
  *
  * @global wpdb $wpdb Retraceur database abstraction object.
  *
