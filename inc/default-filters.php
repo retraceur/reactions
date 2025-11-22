@@ -1,4 +1,25 @@
 <?php
+// Comment meta.
+add_action( 'init', 'wp_create_initial_comment_meta' );
+
+foreach ( array( 'comment_save_pre', 'pre_comment_content' ) as $filter ) {
+	add_filter( $filter, 'convert_invalid_entities' );
+	add_filter( $filter, 'balanceTags', 50 );
+}
+
+// Format strings for display.
+add_filter( 'comment_author', 'wptexturize' );
+add_filter( 'comment_author', 'convert_chars' );
+add_filter( 'comment_author', 'esc_html' );
+
+add_filter( 'comment_text', 'wptexturize' );
+add_filter( 'comment_text', 'convert_chars' );
+add_filter( 'comment_text', 'make_clickable', 9 );
+add_filter( 'comment_text', 'force_balance_tags', 25 );
+add_filter( 'comment_text', 'convert_smilies', 20 );
+add_filter( 'comment_text', 'wpautop', 30 );
+
+add_filter( 'comment_excerpt', 'convert_chars' );
 
 if (
 	// Comment reply link.
