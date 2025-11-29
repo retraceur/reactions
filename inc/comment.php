@@ -1298,11 +1298,6 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 
 	$dupe_id = $wpdb->get_var( $dupe );
 
-	// Allow duplicate notes for resolution purposes.
-	if ( isset( $commentdata['comment_type'] ) && 'note' === $commentdata['comment_type'] ) {
-		$dupe_id = false;
-	}
-
 	/**
 	 * Filters the ID, if any, of the duplicate comment found when creating a new comment.
 	 *
