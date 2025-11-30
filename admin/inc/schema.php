@@ -1,5 +1,11 @@
 <?php
 
+function reactions_populate_options( array $options = array() ) {
+	array(
+		'wp_notes_notify'                 => 1,
+	);
+}
+
 $tables = "CREATE TABLE $wpdb->commentmeta (
 	meta_id bigint(20) unsigned NOT NULL auto_increment,
 	comment_id bigint(20) unsigned NOT NULL default '0',
