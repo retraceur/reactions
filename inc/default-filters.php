@@ -41,6 +41,11 @@ add_action( 'embed_content_meta', 'print_embed_comments_button' );
 
 add_filter( 'retraceur_unapproved_reaction_headers', 'retraceur_reaction_unapproved_headers' );
 
+// Email notifications.
+add_action( 'comment_post', 'wp_new_comment_notify_moderator' );
+add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
+add_action( 'rest_insert_comment', 'wp_new_comment_via_rest_notify_postauthor' );
+
 foreach (
     array(
         'comment_max_links',
