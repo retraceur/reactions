@@ -1,6 +1,263 @@
 <?php
 
 /**
+ * Sends back current comment total and new page links if they need to be updated.
+ *
+ * Contrary to normal success Ajax response ("1"), die with time() on success.
+ *
+ * @since 2.7.0
+ * @access private
+ *
+ * @param int $comment_id
+ * @param int $delta
+ */
+function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
+	$total    = isset( $_POST['_total'] ) ? (int) $_POST['_total'] : 0;
+	$per_page = isset( $_POST['_per_page'] ) ? (int) $_POST['_per_page'] : 0;
+	$page     = isset( $_POST['_page'] ) ? (int) $_POST['_page'] : 0;
+	$url      = isset( $_POST['_url'] ) ? sanitize_url( $_POST['_url'] ) : '';
+
+	// JS didn't send us everything we need to know. Just die with success message.
+	if ( ! $total || ! $per_page || ! $page || ! $url ) {
+		$time           = time();
+		$comment        = get_comment( $comment_id );
+		$comment_status = '';
+		$comment_link   = '';
+
+		if ( $comment ) {
+			$comment_status = $comment->comment_approved;
+		}
+
+		if ( 1 === (int) $comment_status ) {
+			$comment_link = get_comment_link( $comment );
+		}
+
+		$counts = wp_count_comments();
+
+		$response = new WP_Ajax_Response(
+			array(
+				'what'         => 'comment',
+				// Here for completeness - not used.
+				'id'           => $comment_id,
+				'supplemental' => array(
+					'status'               => $comment_status,
+					'postId'               => $comment ? $comment->comment_post_ID : '',
+					'time'                 => $time,
+					'in_moderation'        => $counts->moderated,
+					'i18n_comments_text'   => sprintf(
+						/* translators: %s: Number of comments. */
+						_n( '%s Comment', '%s Comments', $counts->approved ),
+						number_format_i18n( $counts->approved )
+					),
+					'i18n_moderation_text' => sprintf(
+						/* translators: %s: Number of comments. */
+						_n( '%s Comment in moderation', '%s Comments in moderation', $counts->moderated ),
+						number_format_i18n( $counts->moderated )
+					),
+					'comment_link'         => $comment_link,
+				),
+			)
+		);
+		$response->send();
+	}
+
+	$total += $delta;
+	if ( $total < 0 ) {
+		$total = 0;
+	}
+
+	// Only do the expensive stuff on a page-break, and about 1 other time per page.
+	if ( 0 === $total % $per_page || 1 === mt_rand( 1, $per_page ) ) {
+		$post_id = 0;
+		// What type of comment count are we looking for?
+		$status = 'all';
+		$parsed = parse_url( $url );
+
+		if ( isset( $parsed['query'] ) ) {
+			parse_str( $parsed['query'], $query_vars );
+
+			if ( ! empty( $query_vars['comment_status'] ) ) {
+				$status = $query_vars['comment_status'];
+			}
+
+			if ( ! empty( $query_vars['p'] ) ) {
+				$post_id = (int) $query_vars['p'];
+			}
+
+			if ( ! empty( $query_vars['comment_type'] ) ) {
+				$type = $query_vars['comment_type'];
+			}
+		}
+
+		if ( empty( $type ) ) {
+			// Only use the comment count if not filtering by a comment_type.
+			$comment_count = wp_count_comments( $post_id );
+
+			// We're looking for a known type of comment count.
+			if ( isset( $comment_count->$status ) ) {
+				$total = $comment_count->$status;
+			}
+		}
+		// Else use the decremented value from above.
+	}
+
+	// The time since the last comment count.
+	$time    = time();
+	$comment = get_comment( $comment_id );
+	$counts  = wp_count_comments();
+
+	$response = new WP_Ajax_Response(
+		array(
+			'what'         => 'comment',
+			'id'           => $comment_id,
+			'supplemental' => array(
+				'status'               => $comment ? $comment->comment_approved : '',
+				'postId'               => $comment ? $comment->comment_post_ID : '',
+				/* translators: %s: Number of comments. */
+				'total_items_i18n'     => sprintf( _n( '%s item', '%s items', $total ), number_format_i18n( $total ) ),
+				'total_pages'          => (int) ceil( $total / $per_page ),
+				'total_pages_i18n'     => number_format_i18n( (int) ceil( $total / $per_page ) ),
+				'total'                => $total,
+				'time'                 => $time,
+				'in_moderation'        => $counts->moderated,
+				'i18n_moderation_text' => sprintf(
+					/* translators: %s: Number of comments. */
+					_n( '%s Comment in moderation', '%s Comments in moderation', $counts->moderated ),
+					number_format_i18n( $counts->moderated )
+				),
+			),
+		)
+	);
+	$response->send();
+}
+
+/**
+ * Handles deleting a comment via AJAX.
+ *
+ * @since 3.1.0
+ */
+function wp_ajax_delete_comment() {
+	$id = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
+
+	$comment = get_comment( $id );
+
+	if ( ! $comment ) {
+		wp_die( time() );
+	}
+
+	if ( ! current_user_can( 'edit_comment', $comment->comment_ID ) ) {
+		wp_die( -1 );
+	}
+
+	check_ajax_referer( "delete-comment_$id" );
+	$status = wp_get_comment_status( $comment );
+	$delta  = -1;
+
+	if ( isset( $_POST['trash'] ) && '1' === $_POST['trash'] ) {
+		if ( 'trash' === $status ) {
+			wp_die( time() );
+		}
+
+		$result = wp_trash_comment( $comment );
+	} elseif ( isset( $_POST['untrash'] ) && '1' === $_POST['untrash'] ) {
+		if ( 'trash' !== $status ) {
+			wp_die( time() );
+		}
+
+		$result = wp_untrash_comment( $comment );
+
+		// Undo trash, not in Trash.
+		if ( ! isset( $_POST['comment_status'] ) || 'trash' !== $_POST['comment_status'] ) {
+			$delta = 1;
+		}
+	} elseif ( isset( $_POST['spam'] ) && '1' === $_POST['spam'] ) {
+		if ( 'spam' === $status ) {
+			wp_die( time() );
+		}
+
+		$result = wp_spam_comment( $comment );
+	} elseif ( isset( $_POST['unspam'] ) && '1' === $_POST['unspam'] ) {
+		if ( 'spam' !== $status ) {
+			wp_die( time() );
+		}
+
+		$result = wp_unspam_comment( $comment );
+
+		// Undo spam, not in spam.
+		if ( ! isset( $_POST['comment_status'] ) || 'spam' !== $_POST['comment_status'] ) {
+			$delta = 1;
+		}
+	} elseif ( isset( $_POST['delete'] ) && '1' === $_POST['delete'] ) {
+		$result = wp_delete_comment( $comment );
+	} else {
+		wp_die( -1 );
+	}
+
+	if ( $result ) {
+		// Decide if we need to send back '1' or a more complicated response including page links and comment counts.
+		_wp_ajax_delete_comment_response( $comment->comment_ID, $delta );
+	}
+
+	wp_die( 0 );
+}
+
+/**
+ * Handles dimming a comment via AJAX.
+ *
+ * @since 3.1.0
+ */
+function wp_ajax_dim_comment() {
+	$id      = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
+	$comment = get_comment( $id );
+
+	if ( ! $comment ) {
+		$response = new WP_Ajax_Response(
+			array(
+				'what' => 'comment',
+				'id'   => new WP_Error(
+					'invalid_comment',
+					/* translators: %d: Comment ID. */
+					sprintf( __( 'Comment %d does not exist' ), $id )
+				),
+			)
+		);
+		$response->send();
+	}
+
+	if ( ! current_user_can( 'edit_comment', $comment->comment_ID ) && ! current_user_can( 'moderate_comments' ) ) {
+		wp_die( -1 );
+	}
+
+	$current = wp_get_comment_status( $comment );
+
+	if ( isset( $_POST['new'] ) && $_POST['new'] === $current ) {
+		wp_die( time() );
+	}
+
+	check_ajax_referer( "approve-comment_$id" );
+
+	if ( in_array( $current, array( 'unapproved', 'spam' ), true ) ) {
+		$result = wp_set_comment_status( $comment, 'approve', true );
+	} else {
+		$result = wp_set_comment_status( $comment, 'hold', true );
+	}
+
+	if ( is_wp_error( $result ) ) {
+		$response = new WP_Ajax_Response(
+			array(
+				'what' => 'comment',
+				'id'   => $result,
+			)
+		);
+		$response->send();
+	}
+
+	// Decide if we need to send back '1' or a more complicated response including page links and comment counts.
+	_wp_ajax_delete_comment_response( $comment->comment_ID );
+	wp_die( 0 );
+}
+
+/**
  * Handles replying to a comment via AJAX.
  *
  * @since WP 3.1.0
@@ -131,15 +388,16 @@ function wp_ajax_replyto_comment( $action ) {
 	}
 	$comment_list_item = ob_get_clean();
 
-	$response = array(
+	$response_data = array(
 		'what'     => 'comment',
 		'id'       => $comment->comment_ID,
 		'data'     => $comment_list_item,
 		'position' => $position,
 	);
 
-	$counts                   = wp_count_comments();
-	$response['supplemental'] = array(
+	$counts = wp_count_comments();
+
+	$response_data['supplemental'] = array(
 		'in_moderation'        => $counts->moderated,
 		'i18n_comments_text'   => sprintf(
 			/* translators: %s: Number of comments. */
@@ -154,13 +412,13 @@ function wp_ajax_replyto_comment( $action ) {
 	);
 
 	if ( $comment_auto_approved ) {
-		$response['supplemental']['parent_approved'] = $parent->comment_ID;
-		$response['supplemental']['parent_post_id']  = $parent->comment_post_ID;
+		$response_data['supplemental']['parent_approved'] = $parent->comment_ID;
+		$response_data['supplemental']['parent_post_id']  = $parent->comment_post_ID;
 	}
 
-	$x = new WP_Ajax_Response();
-	$x->add( $response );
-	$x->send();
+	$response = new WP_Ajax_Response();
+	$response->add( $response_data );
+	$response->send();
 }
 
 /**
@@ -208,9 +466,9 @@ function wp_ajax_edit_comment() {
 	$wp_list_table->single_row( $comment );
 	$comment_list_item = ob_get_clean();
 
-	$x = new WP_Ajax_Response();
+	$response = new WP_Ajax_Response();
 
-	$x->add(
+	$response->add(
 		array(
 			'what'     => 'edit_comment',
 			'id'       => $comment->comment_ID,
@@ -219,7 +477,7 @@ function wp_ajax_edit_comment() {
 		)
 	);
 
-	$x->send();
+	$response->send();
 }
 
 /**
@@ -263,7 +521,7 @@ function wp_ajax_get_comments( $action ) {
 		wp_die( 1 );
 	}
 
-	$x = new WP_Ajax_Response();
+	$response = new WP_Ajax_Response();
 
 	ob_start();
 	foreach ( $wp_list_table->items as $comment ) {
@@ -275,12 +533,12 @@ function wp_ajax_get_comments( $action ) {
 	}
 	$comment_list_item = ob_get_clean();
 
-	$x->add(
+	$response->add(
 		array(
 			'what' => 'comments',
 			'data' => $comment_list_item,
 		)
 	);
 
-	$x->send();
+	$response->send();
 }
