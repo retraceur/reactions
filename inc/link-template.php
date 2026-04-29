@@ -164,14 +164,14 @@ function get_search_comments_feed_link( $search_query = '', $feed = '' ) {
  * @param int|WP_Comment $comment_id Optional. Comment ID or WP_Comment object.
  * @param string         $context    Optional. Context in which the URL should be used. Either 'display',
  *                                   to include HTML entities, or 'url'. Default 'display'.
- * @return string|void The edit comment link URL for the given comment, or void if the comment id does not exist or
+ * @return string|null The edit comment link URL for the given comment, or null if the comment does not exist or
  *                     the current user is not allowed to edit it.
  */
 function get_edit_comment_link( $comment_id = 0, $context = 'display' ) {
 	$comment = get_comment( $comment_id );
 
 	if ( ! is_object( $comment ) || ! current_user_can( 'edit_comment', $comment->comment_ID ) ) {
-		return;
+		return null;
 	}
 
 	if ( 'display' === $context ) {
