@@ -290,13 +290,13 @@ function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
  * @param string   $label    Optional. Label for link text. Default empty.
  * @param int      $max_page Optional. Max page. Default 0.
  * @param int|null $page     Optional. Page number. Default null.
- * @return string|void HTML-formatted link for the next page of comments.
+ * @return string|null HTML-formatted link for the next page of comments.
  */
 function get_next_comments_link( $label = '', $max_page = 0, $page = null ) {
 	global $wp_query;
 
 	if ( ! is_singular() ) {
-		return;
+		return null;
 	}
 
 	if ( is_null( $page ) ) {
@@ -318,7 +318,7 @@ function get_next_comments_link( $label = '', $max_page = 0, $page = null ) {
 	}
 
 	if ( $next_page > $max_page ) {
-		return;
+		return null;
 	}
 
 	if ( empty( $label ) ) {
@@ -362,11 +362,11 @@ function next_comments_link( $label = '', $max_page = 0 ) {
  *
  * @param string   $label Optional. Label for comments link text. Default empty.
  * @param int|null $page  Optional. Page number. Default null.
- * @return string|void HTML-formatted link for the previous page of comments.
+ * @return string|null HTML-formatted link for the previous page of comments.
  */
 function get_previous_comments_link( $label = '', $page = null ) {
 	if ( ! is_singular() ) {
-		return;
+		return null;
 	}
 
 	if ( is_null( $page ) ) {
@@ -374,7 +374,7 @@ function get_previous_comments_link( $label = '', $page = null ) {
 	}
 
 	if ( (int) $page <= 1 ) {
-		return;
+		return null;
 	}
 
 	$previous_page = (int) $page - 1;
