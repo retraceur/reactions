@@ -1,0 +1,13 @@
+{
+	"name": "retraceur/reactions",
+	"type": "plugin",
+	"requires": {
+		"retraceur": "1.0.0",
+		"php": "5.6",
+		"dependencies": []
+	},
+	"author": {
+		"name": "imath",
+		"url": "https://imathi.eu"
+	}
+}
