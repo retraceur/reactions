@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Réactions
- * Plugin URI: https://github.com/retraceur/reaction/
+ * Plugin URI: https://github.com/retraceur/reactions/
  * Description: Retraceur's Reaction feature as a plugin.
  * Version: 1.0.0-alpha
  * Requires PHP: 5.6
@@ -13,7 +13,7 @@
  * Text Domain: retraceur-reaction
  * Domain Path: /languages/
  * Network: True
- * GitHub Plugin URI: https://github.com/retraceur/reaction/
+ * GitHub Plugin URI: https://github.com/retraceur/reactions/
  */
 
 // Exit if accessed directly.

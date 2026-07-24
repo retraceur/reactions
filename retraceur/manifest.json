@@ -1,9 +1,10 @@
 {
+	"$schema": "https://raw.githubusercontent.com/retraceur/ressources/refs/heads/main/schemas/retraceur-manifest.json",
 	"name": "retraceur/reactions",
 	"type": "plugin",
 	"requires": {
 		"retraceur": "1.0.0",
-		"php": "5.6",
+		"php": "7.4",
 		"dependencies": []
 	},
 	"author": {
