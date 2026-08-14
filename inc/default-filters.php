@@ -73,4 +73,10 @@ add_action( 'do_all_pings', 'do_all_pingbacks', 10, 0 );
 add_action( 'do_all_pings', 'do_all_enclosures', 10, 0 );
 add_action( 'do_all_pings', 'do_all_trackbacks', 10, 0 );
 add_action( 'do_all_pings', 'generic_ping', 10, 0 );
+
+// Disable pings (pingbacks, trackbacks, and ping service notifications) in non-production environments.
+add_action( 'do_all_pings', 'wp_maybe_disable_outgoing_pings_for_environment', 1, 0 );
+add_action( 'pre_trackback_post', 'wp_maybe_disable_trackback_for_environment', 10, 0 );
+add_filter( 'xmlrpc_methods', 'wp_maybe_disable_xmlrpc_pingback_for_environment' );
+
 add_filter( 'option_ping_sites', 'privacy_ping_filter' );
