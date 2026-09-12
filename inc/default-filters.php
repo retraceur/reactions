@@ -80,3 +80,6 @@ add_action( 'pre_trackback_post', 'wp_maybe_disable_trackback_for_environment', 
 add_filter( 'xmlrpc_methods', 'wp_maybe_disable_xmlrpc_pingback_for_environment' );
 
 add_filter( 'option_ping_sites', 'privacy_ping_filter' );
+
+// Inline note markers.
+add_filter( 'render_block', 'wp_strip_inline_note_markers' );
