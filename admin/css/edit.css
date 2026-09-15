@@ -1,3 +1,13 @@
+#comment-parent-div {
+	padding-top: 5px;
+	/* Fieldsets cannot shrink below their content by default, allow it so the select cannot cause overflow. */
+	min-width: 0;
+}
+
+#comment-parent-div select {
+	width: 100%;
+}
+
 #show-comments {
 	overflow: hidden;
 }
