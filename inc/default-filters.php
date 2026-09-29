@@ -80,6 +80,15 @@ add_action( 'pre_trackback_post', 'wp_maybe_disable_trackback_for_environment', 
 add_filter( 'xmlrpc_methods', 'wp_maybe_disable_xmlrpc_pingback_for_environment' );
 
 add_filter( 'option_ping_sites', 'privacy_ping_filter' );
+add_action( 'check_comment_flood', 'check_comment_flood_db', 10, 4 );
+add_filter( 'comment_flood_filter', 'wp_throttle_comment_flood', 10, 3 );
+add_filter( 'pre_comment_content', 'wp_rel_ugc', 15 );
+
+// Note mention chips in comment content: allow `span` through comment kses,
+// then reduce its classes to the mention tokens right after `wp_filter_kses`.
+add_filter( 'wp_kses_allowed_html', '_wp_kses_allow_note_mention_span', 10, 2 );
+add_filter( 'pre_comment_content', '_wp_kses_sanitize_note_mention_classes', 11 );
+add_filter( 'comment_email', 'antispambot' );
 
 // Inline note markers.
 add_filter( 'render_block', 'wp_strip_inline_note_markers' );
