@@ -45,6 +45,7 @@ add_filter( 'retraceur_unapproved_reaction_headers', 'retraceur_reaction_unappro
 add_action( 'comment_post', 'wp_new_comment_notify_moderator' );
 add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
 add_action( 'rest_insert_comment', 'wp_new_comment_via_rest_notify_postauthor' );
+add_action( 'rest_insert_comment', 'wp_notify_note_mentions', 10, 3 );
 
 foreach (
     array(
